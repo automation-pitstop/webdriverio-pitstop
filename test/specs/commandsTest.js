@@ -1,4 +1,6 @@
-const commands = require("../../core_framework/Commands");
+// const commands = require("../../core_framework/Commands");
+// import commands from "../../core_framework/Commands";
+import commands from "../../core_framework/Commands";
 
 describe("My Login application", () => {
     // it("Fetch the process or env data", async () => {
@@ -12,19 +14,13 @@ describe("My Login application", () => {
 
     it("Fetch the process or env data", async () => {
         await browser.url("https://example.cypress.io/commands/actions");
-        // await browser.url(testConfigGbl.url);
         console.log(await browser.getTimeouts());
-        // let disabledRadioBtn = await commands.findElement("//*[@id='optionsRadios3']");
-        // try {
-        await commands.click("//*[@id='optionsRadios3']");
-        // } catch (error) {
-        //     console.log(error);
-        // }
-
-        // console.log(await disabledRadioBtn.isEnabled());
+        // let disabledRadioBtn = await commands.findElement("//*[@id='optionsRadios3']", 40000);
+        await commands.click("//*[@id='optionsRadios3']", 40000);
+        console.log(await disabledRadioBtn.isEnabled());
         // await disabledRadioBtn.click();
         // console.log(await disabledRadioBtn.isEnabled());
-        await browser.pause(10000);
+        // await browser.pause(10000);
         console.log("===============Done===========");
     });
 });

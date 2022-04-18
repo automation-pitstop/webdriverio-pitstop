@@ -18,6 +18,7 @@
         "wdio-chromedriver-service": "^7.3.2"
     },
     "scripts": {
-        "wdio": "wdio run wdio.conf.js"
+        "wdio": "wdio run wdio.conf.js",
+        "loginTest": "wdio run wdio.conf.js --spec ./test/specs/loginPageTest.js"
     }
 }

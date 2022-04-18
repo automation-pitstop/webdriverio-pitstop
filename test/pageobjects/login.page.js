@@ -1,5 +1,6 @@
 import Page from "./page";
-const command = require("../../core_framework/Commands");
+import securePage from "./secure.page";
+import command from "../../core_framework/Commands";
 
 /**
  * sub page containing specific selectors and methods for a specific page
@@ -26,16 +27,20 @@ class LoginPage extends Page {
     //     this.btnSubmit.click();
     // }
 
+    userNameInputBox = "#username";
+    passwordInputBox = "#password";
+    loginButton = 'button[type="submit"]';
+
     async inputUsername() {
-        return await command.findElement("#username");
+        return await command.findElement(this.userNameInputBox);
     }
 
     async inputPassword() {
-        return await command.findElement("#password");
+        return await command.findElement(this.passwordInputBox);
     }
 
     async btnSubmit() {
-        return await command.findElement('button[type="submit"]');
+        return await command.findElement(this.loginButton);
     }
 
     /**
@@ -49,6 +54,7 @@ class LoginPage extends Page {
         await passwordElem.setValue(password);
         let submitBtn = await this.btnSubmit();
         await submitBtn.click();
+        return new securePage();
     }
 
     /**
