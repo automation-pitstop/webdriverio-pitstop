@@ -7,10 +7,9 @@ const root = path.resolve("./");
 const propertiesReader = require("properties-reader");
 var props = propertiesReader("./properties/prop.tst.properties");
 
-describe("My Login application", () => {
-    it("should login with valid credentials", async () => {
-        await LoginPage.open();
-        await LoginPage.login("tomsmith", "SuperSecretPassword!");
-        await browser.pause(10000);
+describe("Print file path ", () => {
+    it("File path printed", async () => {
+        console.log(`__dirname : ${__dirname}`);
+        console.log(`root : ${root}`);
     });
 });

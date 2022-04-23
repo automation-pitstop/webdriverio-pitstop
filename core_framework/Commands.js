@@ -1,4 +1,5 @@
-const testConfig = require("../properties/testConfig");
+require("module-alias/register");
+const testConfig = require("../properties/appConfig");
 import assert from "assert";
 
 class Commands {
