@@ -38,6 +38,24 @@ exports.config = merge(
                 // it is possible to configure which logTypes to include/exclude.
                 // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
                 // excludeDriverLogs: ['bugreport', 'server'],
+                "goog:chromeOptions": {
+                    args: [
+                        // "--force-device-scale-factor=0.85",
+                        "--window-size=1920,1080",
+                        // "--window-size=800,600",
+                    ],
+                    prefs: {
+                        // prompt_for_download: false,
+                        // "plugins.always_open_pdf_externally'": true,
+                    },
+                },
+                // proxy: {
+                //     proxyType: "manual",
+                //     httpProxy: "corporate.proxy:8080",
+                //     socksUsername: "codeceptjs",
+                //     socksPassword: "secret",
+                //     noProxy: "127.0.0.1,localhost",
+                // },
             },
         ],
         services: ["chromedriver"],

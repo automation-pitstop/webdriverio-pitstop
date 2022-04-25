@@ -2,17 +2,8 @@ var fs = require("fs");
 const { removeSync } = require("fs-extra");
 import fileUtils from "./core_framework/utils/FileUtils";
 import commandUtils from "./core_framework/utils/CommandUtils";
-// const testConfig = require("./properties/testConfig");
 process.env.ENV = process.env.ENV == undefined ? "tst" : process.env.ENV;
 global.testConfigGbl = commandUtils.getUpdatedConfigData(process.env.ENV);
-
-// console.log(`Starting execution on env : '${ENV}'\nTo change 'env' set ENV=dev|tst|prod from enviornment variable`);
-// console.log("Executing test with below configurations:");
-// console.log("==========================================");
-// for (let property of testConfigGbl) {
-//     console.log(property);
-// }
-// console.log("==========================================");
 
 exports.config = {
     //
@@ -103,7 +94,7 @@ exports.config = {
     outputDir: "./logs",
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
-    bail: testConfigGbl.bail,
+    bail: testConfigGbl.get("bail"),
     //
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
