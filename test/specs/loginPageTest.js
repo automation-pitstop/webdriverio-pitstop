@@ -10,6 +10,7 @@ var props = propertiesReader("./properties/prop.tst.properties");
 describe("My Login application", () => {
     it("should login with valid credentials", async () => {
         await LoginPage.open();
+        await browser.takeScreenshot();
         await LoginPage.login("tomsmith", "SuperSecretPassword!");
         await browser.pause(10000);
     });

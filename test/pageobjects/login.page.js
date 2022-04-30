@@ -51,7 +51,9 @@ class LoginPage extends Page {
         let userNameElem = await this.inputUsername().then(async (elem) => await elem.setValue(username));
         // await userNameElem.setValue(username);
         let passwordElem = await this.inputPassword();
+        await browser.takeScreenshot();
         await passwordElem.setValue(password);
+        await browser.takeScreenshot();
         let submitBtn = await this.btnSubmit();
         await submitBtn.click();
         return new securePage();

@@ -1,5 +1,6 @@
 var fs = require("fs");
 const { removeSync } = require("fs-extra");
+const allure = require("allure-commandline");
 import fileUtils from "./core_framework/utils/FileUtils";
 import commandUtils from "./core_framework/utils/CommandUtils";
 process.env.ENV = process.env.ENV == undefined ? "tst" : process.env.ENV;
@@ -151,6 +152,14 @@ exports.config = {
                 },
             },
         ],
+        [
+            "allure",
+            {
+                outputDir: "./reports/allure-results",
+                disableWebdriverStepsReporting: true,
+                disableWebdriverScreenshotsReporting: false, //Set this false to capture screenshot in allure reports
+            },
+        ],
     ],
 
     //
@@ -270,6 +279,7 @@ exports.config = {
         } else {
             await commandUtils.captureBrowserScreenshot(`./reports/screenshots/${new Date().getTime()}_${test.title.replace(/ /g, "_")}`);
         }
+        await browser.takeScreenshot(); //This is allure report overridded takeScreenshot method
     },
 
     /**
@@ -312,8 +322,21 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    // onComplete: function(exitCode, config, capabilities, results) {
-    // },
+    onComplete: async function (exitCode, config, capabilities, results) {
+        const reportError = new Error("Could not generate Allure report");
+        const generation = allure(["generate", `./reports/allure-results`, "--clean"]);
+        return new Promise((resolve, reject) => {
+            const generationTimeout = setTimeout(() => reject(reportError), 10000);
+            generation.on("exit", function (exitCode) {
+                clearTimeout(generationTimeout);
+                if (exitCode !== 0) {
+                    return reject(reportError);
+                }
+                console.log("Allure report successfully generated");
+                resolve();
+            });
+        });
+    },
     /**
      * Gets executed when a refresh happens.
      * @param {String} oldSessionId session ID of the old session
