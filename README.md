@@ -20,3 +20,13 @@ maximizeBrowserAtLaunch: true (To maximize the browser at lauch)
 Helpful tips related to browser
 Capabilities help (https://chromedriver.chromium.org/capabilities)
 Chrome args switches (https://peter.sh/experiments/chromium-command-line-switches/)
+
+Task to do :
+Add data source for data driven test
+
+-   Create a login test which run for multiple set of data
+-   Use CSV or any other flat file to store the test data
+
+Add any HTML reporter
+
+-   Can try Allure reports

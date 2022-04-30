@@ -1,5 +1,4 @@
 require("module-alias/register");
-const { rejects } = require("assert");
 var fs = require("fs");
 import desktopScreenshot from "screenshot-desktop";
 import path from "path";
