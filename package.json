@@ -14,10 +14,21 @@
         "chromedriver": "^99.0.0",
         "csv": "^6.0.5",
         "csv-writer": "^1.6.0",
+        "module-alias": "^2.2.2",
         "properties-reader": "^2.2.0",
+        "screenshot-desktop": "^1.12.7",
         "wdio-chromedriver-service": "^7.3.2"
     },
     "scripts": {
-        "wdio": "wdio run wdio.conf.js"
+        "wdio": "wdio run wdio.conf.js",
+        "loginTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/loginPageTest.js",
+        "parallelTest": "wdio run wdio.conf.chrome.js --suite parallelTest",
+        "commandTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/commandsTest.js",
+        "quickTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/quickEmptyTest.js"
+    },
+    "_moduleAliases": {
+        "@root": ".",
+        "@core_commands": "core_framework",
+        "@properties": "properties"
     }
 }

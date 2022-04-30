@@ -1,38 +1,9 @@
 var fs = require("fs");
 const { removeSync } = require("fs-extra");
-const fileUtils = require("./core_framework/utils/FileUtils");
-const testConfig = require("./properties/testConfig");
+import fileUtils from "./core_framework/utils/FileUtils";
+import commandUtils from "./core_framework/utils/CommandUtils";
 process.env.ENV = process.env.ENV == undefined ? "tst" : process.env.ENV;
-const ENV = process.env.ENV;
-var dir = "./logs";
-if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-}
-dir = "./tmp";
-if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-}
-
-if (!ENV || !["dev", "tst", "prod"].includes(ENV)) {
-    console.log("Invalid environment! Kindly select : ENV=dev|tst|prod");
-    process.exit();
-}
-console.log(`Starting execution on env : '${ENV}'\nTo change 'env' set ENV=dev|tst|prod from enviornment variable`);
-global.testConfigGbl = testConfig[ENV];
-console.log("Executing test with below configurations:");
-console.log("==========================================");
-for (let property in global.testConfigGbl) {
-    console.log(property + " : " + global.testConfigGbl[property]);
-}
-console.log("==========================================");
-// dir = "./reports";
-// if (!fs.existsSync(dir)) {
-//     fs.mkdirSync(dir);
-// }
-// dir = "./reports/junitResults";
-// if (!fs.existsSync(dir)) {
-//     fs.mkdirSync(dir);
-// }
+global.testConfigGbl = commandUtils.getUpdatedConfigData(process.env.ENV);
 
 exports.config = {
     //
@@ -56,48 +27,48 @@ exports.config = {
     // then the current working directory is where your `package.json` resides, so `wdio`
     // will be called from there.
     //
-    specs: ["./test/specs/**/*e2e.js"],
-    // Patterns to exclude.
-    exclude: [
-        // 'path/to/excluded/files'
-    ],
+    // specs: ["./test/specs/**/commandsTest.js"],
+    // // Patterns to exclude.
+    // exclude: [
+    //     // 'path/to/excluded/files'
+    // ],
     //
-    // ============
-    // Capabilities
-    // ============
-    // Define your capabilities here. WebdriverIO can run multiple capabilities at the same
-    // time. Depending on the number of capabilities, WebdriverIO launches several test
-    // sessions. Within your capabilities you can overwrite the spec and exclude options in
-    // order to group specific specs to a specific capability.
-    //
-    // First, you can define how many instances should be started at the same time. Let's
-    // say you have 3 different capabilities (Chrome, Firefox, and Safari) and you have
-    // set maxInstances to 1; wdio will spawn 3 processes. Therefore, if you have 10 spec
-    // files and you set maxInstances to 10, all spec files will get tested at the same time
-    // and 30 processes will get spawned. The property handles how many capabilities
-    // from the same test should run tests.
-    //
-    maxInstances: 10,
-    //
-    // If you have trouble getting all important capabilities together, check out the
-    // Sauce Labs platform configurator - a great tool to configure your capabilities:
-    // https://saucelabs.com/platform/platform-configurator
-    //
-    capabilities: [
-        {
-            // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-            // grid with only 5 firefox instances available you can make sure that not more than
-            // 5 instances get started at a time.
-            maxInstances: 1,
-            //
-            browserName: "chrome",
-            acceptInsecureCerts: true,
-            // If outputDir is provided WebdriverIO can capture driver session logs
-            // it is possible to configure which logTypes to include/exclude.
-            // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
-            // excludeDriverLogs: ['bugreport', 'server'],
-        },
-    ],
+    // // ============
+    // // Capabilities
+    // // ============
+    // // Define your capabilities here. WebdriverIO can run multiple capabilities at the same
+    // // time. Depending on the number of capabilities, WebdriverIO launches several test
+    // // sessions. Within your capabilities you can overwrite the spec and exclude options in
+    // // order to group specific specs to a specific capability.
+    // //
+    // // First, you can define how many instances should be started at the same time. Let's
+    // // say you have 3 different capabilities (Chrome, Firefox, and Safari) and you have
+    // // set maxInstances to 1; wdio will spawn 3 processes. Therefore, if you have 10 spec
+    // // files and you set maxInstances to 10, all spec files will get tested at the same time
+    // // and 30 processes will get spawned. The property handles how many capabilities
+    // // from the same test should run tests.
+    // //
+    // maxInstances: 10,
+    // //
+    // // If you have trouble getting all important capabilities together, check out the
+    // // Sauce Labs platform configurator - a great tool to configure your capabilities:
+    // // https://saucelabs.com/platform/platform-configurator
+    // //
+    // capabilities: [
+    //     {
+    //         // maxInstances can get overwritten per capability. So if you have an in-house Selenium
+    //         // grid with only 5 firefox instances available you can make sure that not more than
+    //         // 5 instances get started at a time.
+    //         maxInstances: 1,
+    //         //
+    //         browserName: "chrome",
+    //         acceptInsecureCerts: true,
+    //         // If outputDir is provided WebdriverIO can capture driver session logs
+    //         // it is possible to configure which logTypes to include/exclude.
+    //         // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
+    //         // excludeDriverLogs: ['bugreport', 'server'],
+    //     },
+    // ],
     //
     // ===================
     // Test Configurations
@@ -123,17 +94,17 @@ exports.config = {
     outputDir: "./logs",
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
-    bail: 0,
+    bail: testConfigGbl.get("bail"),
     //
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
     // baseUrl: "http://localhost",
-    baseUrl: testConfigGbl.url,
+    baseUrl: testConfigGbl.get("baseUrl"),
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: testConfigGbl.waitforTimeout,
+    waitforTimeout: testConfigGbl.get("waitforTimeout"),
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -146,7 +117,7 @@ exports.config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: ["chromedriver"],
+    // services: ["chromedriver"],
 
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -157,13 +128,13 @@ exports.config = {
     framework: "mocha",
     //
     // The number of times to retry the entire specfile when it fails as a whole
-    // specFileRetries: 1,
+    specFileRetries: testConfigGbl.get("specFileRetries"),
     //
     // Delay in seconds between the spec file retry attempts
-    // specFileRetriesDelay: 0,
+    specFileRetriesDelay: testConfigGbl.get("specFileRetriesDelay"),
     //
     // Whether or not retried specfiles should be retried immediately or deferred to the end of the queue
-    // specFileRetriesDeferred: false,
+    specFileRetriesDeferred: testConfigGbl.get("specFileRetriesDeferred"),
     //
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
@@ -187,7 +158,7 @@ exports.config = {
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: "bdd",
-        timeout: 60000 * 10,
+        timeout: testConfigGbl.get("suiteTimeout"),
     },
     //
     // =====
@@ -202,14 +173,13 @@ exports.config = {
      * @param {Object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-    onPrepare: function (config, capabilities) {
-        console.info("INFO onPrepare is called");
-        console.info("INFO deleting old reports folder");
-        // fileUtils
-        //     .deleteFolderRecursively("./reports")
-        //     .then((value) => console.info(value))
-        //     .catch((err) => console.error(err));
+    onPrepare: async function (config, capabilities) {
+        console.info("INFO : OnPrepare is called");
+        console.info("INFO : Deleting old reports folder");
         removeSync("./reports");
+        await fileUtils.createDirUnderRoot("logs");
+        await fileUtils.createDirUnderRoot("tmp");
+        await fileUtils.createDirUnderRoot("reports\\screenshots");
     },
     /**
      * Gets executed before a worker process is spawned and can be used to initialise specific service
@@ -249,7 +219,10 @@ exports.config = {
      * @param {Object}         browser      instance of created browser/device session
      */
     before: async function (capabilities, specs) {
-        await browser.setTimeout({ implicit: testConfigGbl.implicitWait });
+        if (testConfigGbl.get("maximizeBrowserAtLaunch") == true) {
+            console.log(`INFO : Maximizing browser`);
+            await browser.maximizeWindow();
+        }
     },
     /**
      * Runs before a WebdriverIO command gets executed.
@@ -291,8 +264,13 @@ exports.config = {
      * @param {Boolean} result.passed    true if test has passed, otherwise false
      * @param {Object}  result.retries   informations to spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-    // afterTest: function(test, context, { error, result, duration, passed, retries }) {
-    // },
+    afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+        if (testConfigGbl.get("captureDesktopScreenshot")) {
+            await commandUtils.captureDesktopScreenshot(`./reports/screenshots/${new Date().getTime()}_${test.title.replace(/ /g, "_")}`);
+        } else {
+            await commandUtils.captureBrowserScreenshot(`./reports/screenshots/${new Date().getTime()}_${test.title.replace(/ /g, "_")}`);
+        }
+    },
 
     /**
      * Hook that gets executed after the suite has ended

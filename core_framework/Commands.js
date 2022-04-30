@@ -1,36 +1,55 @@
-const testConfig = require("../properties/testConfig");
+require("module-alias/register");
+const testConfig = require("../properties/appConfig");
+import assert from "assert";
 
 class Commands {
-    async findElement(locator) {
-        let elem = await $(locator);
-        if (!(await elem.isExisting())) {
-            throw new Error(`Unable to locate the element '${locator}'`);
+    async findElement(locator, waitTime) {
+        waitTime = this.getOverriddenTimeout(waitTime);
+        try {
+            let element = await $(locator);
+            await element.waitForExist({ timeout: waitTime });
+            return element;
+        } catch (error) {
+            assert.fail(`ISSUE : Unable to find element, locator : ${locator}\n` + error);
         }
-        return elem;
     }
 
-    async click(locator, timeOut) {
-        let elem = await this.findElement(locator);
-        if (timeOut == undefined) {
-            timeOut = testConfigGbl.waitforTimeout;
-        } else {
-            console.log(`Explicit wait defined, will wait for '${timeOut}' ms`);
-        }
-        // if (!(await elem.isDisplayed())) {
-        //     throw new Error(`Element exist but not displayed on screen : '${locator}'`);
-        // }
-        // if (!(await elem.isClickable())) {
-        //     throw new Error(`Element is not clickable : '${locator}'`);
-        // }
-        // await elem.click();
-        // return;
+    async findElements(locator, waitTime) {
+        waitTime = this.getOverriddenTimeout(waitTime);
         try {
-            await elem.waitForClickable({ timeout: timeOut, timeoutMsg: `Element is not clickable : '${locator}'` });
+            await this.findElement(locator, waitTime);
+            let elementList = await $$(locator);
+            if (elementList != null && elementList.length > 0) {
+                return elementList;
+            } else {
+                throw new Error(`Element list count is less than Zero or it null`);
+            }
+        } catch (error) {
+            assert.fail(`ISSUE : Unable to find elements, locator : ${locator}\n` + error);
+        }
+    }
+
+    async click(locator, waitTime) {
+        waitTime = this.getOverriddenTimeout(waitTime);
+        try {
+            let elem = await this.findElement(locator);
+            await elem.waitForClickable({ timeout: waitTime, timeoutMsg: `Element is not clickable.` });
             await elem.click();
             return;
         } catch (error) {
-            throw new Error(error);
+            assert.fail(`ISSUE : Unable to click on element, locator : ${locator}\n` + error);
         }
     }
+
+    getOverriddenTimeout(waitTime) {
+        if (waitTime == undefined) {
+            waitTime = testConfigGbl.waitforTimeout;
+            // console.log(`Explicit wait NOT defined, will wait for max '${timeOut}' ms`);
+        } else {
+            // console.log(`Explicit wait defined, will wait for max '${timeOut}' ms`);
+        }
+        return waitTime;
+    }
 }
-module.exports = new Commands();
+// module.exports = new Commands();
+export default new Commands();
