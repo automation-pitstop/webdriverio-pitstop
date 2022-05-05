@@ -26,11 +26,13 @@
         "loginTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/loginPageTest.js",
         "parallelTest": "wdio run wdio.conf.chrome.js --suite parallelTest",
         "commandTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/commandsTest.js",
-        "quickTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/quickEmptyTest.js"
+        "quickTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/quickEmptyTest.js",
+        "filePathTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/filePathPrint.js",
+        "quickTest1": "./node_modules/.bin/wdio wdio.conf.chrome.js --spec ./test/specs/quickEmptyTest.js"
     },
     "_moduleAliases": {
         "@root": ".",
         "@core_commands": "core_framework",
-        "@properties": "properties"
+        "@core_config": "test_config"
     }
 }

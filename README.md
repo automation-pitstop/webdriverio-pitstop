@@ -4,6 +4,9 @@
 
 `testConfigGbl` - Global config main, which is resolved from environment basis i.e. `tst`,`dev` and `prod`
 
+-   Change env in Windows using powershell `$env:ENV="prod"`, and then execute the test in next command. i.e. `npm run test`
+-   Change env in Linux `ENV=prod` and add the rest of the command. i.e. `ENV=prod npm run test`
+
 ## List of configurable properties, which can be overrided from env variables
 
 -   baseUrl : "https://the-internet.herokuapp.com/" (Add the baseUrl)
