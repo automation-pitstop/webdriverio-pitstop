@@ -157,7 +157,7 @@ exports.config = {
             {
                 outputDir: "./reports/allure-results",
                 disableWebdriverStepsReporting: true,
-                disableWebdriverScreenshotsReporting: false, //Set this false to capture screenshot in allure reports
+                disableWebdriverScreenshotsReporting: false, //Always set this false to capture screenshot in allure reports
             },
         ],
     ],
@@ -274,12 +274,14 @@ exports.config = {
      * @param {Object}  result.retries   informations to spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
     afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+        //Currently we are taking screenshot after every test, doesnt matter test fails or pass
         if (testConfigGbl.get("captureDesktopScreenshot")) {
             await commandUtils.captureDesktopScreenshot(`./reports/screenshots/${new Date().getTime()}_${test.title.replace(/ /g, "_")}`);
         } else {
             await commandUtils.captureBrowserScreenshot(`./reports/screenshots/${new Date().getTime()}_${test.title.replace(/ /g, "_")}`);
         }
-        await browser.takeScreenshot(); //This is allure report overridded takeScreenshot method
+        //This is allure report overridded takeScreenshot method
+        await browser.takeScreenshot();
     },
 
     /**
@@ -323,6 +325,7 @@ exports.config = {
      * @param {<Object>} results object containing test results
      */
     onComplete: async function (exitCode, config, capabilities, results) {
+        //Code to generate the allure report after the test complere
         const reportError = new Error("Could not generate Allure report");
         const generation = allure(["generate", `./reports/allure-results`, "--clean"]);
         return new Promise((resolve, reject) => {
@@ -336,6 +339,7 @@ exports.config = {
                 resolve();
             });
         });
+        //------------------------------------------------------------
     },
     /**
      * Gets executed when a refresh happens.
