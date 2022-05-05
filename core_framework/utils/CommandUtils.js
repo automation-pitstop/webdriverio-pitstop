@@ -2,7 +2,7 @@ require("module-alias/register");
 var fs = require("fs");
 import desktopScreenshot from "screenshot-desktop";
 import path from "path";
-const appConfig = require("@config/appConfig");
+const appConfig = require("@core_config/appConfig");
 
 class CommandUtils {
     deleteFolderRecursively = function (absoluteDirPath) {

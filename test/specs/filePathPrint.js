@@ -1,5 +1,5 @@
 import path from "path";
-var testConfig = require("../../config/appConfig");
+var testConfig = require("../../test_config/appConfig");
 const __dirname = path.dirname(__filename);
 const root = path.resolve("./");
 const propertiesReader = require("properties-reader");

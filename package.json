@@ -31,6 +31,6 @@
     "_moduleAliases": {
         "@root": ".",
         "@core_commands": "core_framework",
-        "@config": "config"
+        "@core_config": "test_config"
     }
 }

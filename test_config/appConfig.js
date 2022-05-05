@@ -18,9 +18,9 @@ module.exports = {
         waitforInterval: 5,
         suiteTimeout: 60000 * 2,
         // bail: 0,
-        specFileRetries: 0,
+        specFileRetries: 1,
         // specFileRetriesDelay:0,
-        specFileRetriesDeferred: false,
+        specFileRetriesDeferred: false, //means run the moment spec is failed
         browserMaxInstances: 1,
         captureDesktopScreenshot: true,
         maximizeBrowserAtLaunch: false,
