@@ -11,9 +11,10 @@
         "@wdio/local-runner": "^7.19.2",
         "@wdio/mocha-framework": "^7.19.2",
         "@wdio/spec-reporter": "^7.19.1",
-        "chromedriver": "^99.0.0",
+        "chromedriver": "^101.0.0",
         "csv": "^6.0.5",
         "csv-writer": "^1.6.0",
+        "csvtojson": "^2.0.10",
         "module-alias": "^2.2.2",
         "properties-reader": "^2.2.0",
         "screenshot-desktop": "^1.12.7",
@@ -24,8 +25,10 @@
         "loginTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/loginPageTest.js",
         "parallelTest": "wdio run wdio.conf.chrome.js --suite parallelTest",
         "commandTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/commandsTest.js",
+        "csvTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/csvTest.js",
         "quickTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/quickEmptyTest.js",
         "filePathTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/filePathPrint.js",
+        "hookSequenceTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/hookSequenceTest.js",
         "quickTest1": "./node_modules/.bin/wdio wdio.conf.chrome.js --spec ./test/specs/quickEmptyTest.js"
     },
     "_moduleAliases": {
