@@ -1,7 +1,7 @@
 import commands from "../../../core_framework/Commands";
 
 describe("Test suite 1", () => {
-    it("Test case 1", async () => {
+    it("Test case 1, should fail", async () => {
         await browser.url("https://example.cypress.io/commands/actions");
         let disabledRadioBtn = await commands.findElement("//*[@id='optionsRadios3']");
         await commands.click("//*[@id='optionsRadios3']");

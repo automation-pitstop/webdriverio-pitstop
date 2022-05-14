@@ -17,4 +17,4 @@ class SecurePage extends Page {
     }
 }
 
-export default new SecurePage();
+export default SecurePage;

@@ -1,9 +1,16 @@
 var fs = require("fs");
 const { removeSync } = require("fs-extra");
+import path from "path";
 import fileUtils from "./core_framework/utils/FileUtils";
 import commandUtils from "./core_framework/utils/CommandUtils";
+import csvUtils from "./core_framework/utils/CsvUtils";
 process.env.ENV = process.env.ENV == undefined ? "tst" : process.env.ENV;
 global.testConfigGbl = commandUtils.getUpdatedConfigData(process.env.ENV);
+const testSuiteCsvPath = "./test_suite_data/suiteData.csv";
+const testDataCsvPath = "./test_data/testData.csv";
+global.testSpecDetails = "";
+global.testCaseData = "";
+global.testIdSpecificData = "";
 
 exports.config = {
     //
@@ -174,12 +181,14 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      */
     onPrepare: async function (config, capabilities) {
+        console.log(`INFO : ===== Executing onPrepare hook =====`);
         console.info("INFO : OnPrepare is called");
         console.info("INFO : Deleting old reports folder");
         removeSync("./reports");
         await fileUtils.createDirUnderRoot("logs");
         await fileUtils.createDirUnderRoot("tmp");
         await fileUtils.createDirUnderRoot("reports\\screenshots");
+        // testDataGbl = await csvUtils.getJsonFromCsvAsync("./test_data/data.csv");
     },
     /**
      * Gets executed before a worker process is spawned and can be used to initialise specific service
@@ -190,8 +199,11 @@ exports.config = {
      * @param  {[type]} args     object that will be merged with the main configuration once worker is initialized
      * @param  {[type]} execArgv list of string arguments passed to the worker process
      */
-    // onWorkerStart: function (cid, caps, specs, args, execArgv) {
-    // },
+    onWorkerStart: async function (cid, caps, specs, args, execArgv) {
+        console.log(`INFO : ===== Executing onWorkerStart hook =====`);
+        // testDataJson = await csv().fromFile(testDataCsvPath);
+        // console.log(testDataJson);
+    },
     /**
      * Gets executed just after a worker process has exited.
      * @param  {String} cid      capability id (e.g 0-0)
@@ -199,8 +211,9 @@ exports.config = {
      * @param  {[type]} specs    specs to be run in the worker process
      * @param  {Number} retries  number of retries used
      */
-    // onWorkerEnd: function (cid, exitCode, specs, retries) {
-    // },
+    onWorkerEnd: async function (cid, exitCode, specs, retries) {
+        console.log(`INFO : ===== Executing onWorkerEnd hook =====`);
+    },
     /**
      * Gets executed just before initialising the webdriver session and test framework. It allows you
      * to manipulate configurations depending on the capability or spec.
@@ -209,8 +222,12 @@ exports.config = {
      * @param {Array.<String>} specs List of spec file paths that are to be run
      * @param {String} cid worker id (e.g. 0-0)
      */
-    // beforeSession: function (config, capabilities, specs, cid) {
-    // },
+    beforeSession: async function (config, capabilities, specs, cid) {
+        console.log(`INFO : ===== Executing beforeSession hook =====`);
+        testSpecDetails = await csvUtils.getExecutableSpecDetailsFromTestSuiteCsv(testSuiteCsvPath);
+        testCaseData = await csvUtils.getJsonDataFromCsv(testDataCsvPath);
+        testIdSpecificData = csvUtils.getDataInMap(testCaseData, "testCaseId");
+    },
     /**
      * Gets executed before test execution begins. At this point you can access to all global
      * variables like `browser`. It is the perfect place to define custom commands.
@@ -219,10 +236,16 @@ exports.config = {
      * @param {Object}         browser      instance of created browser/device session
      */
     before: async function (capabilities, specs) {
+        console.log(`INFO : ===== Executing before hook =====`);
         if (testConfigGbl.get("maximizeBrowserAtLaunch") == true) {
             console.log(`INFO : Maximizing browser`);
             await browser.maximizeWindow();
         }
+        //Add custom command to WDIO commands
+        // browser.addCommand("getDataCsvToJson", async (csvFilePath) => {
+        //     // return await csv().fromFile(csvFilePath);
+        //     return await csvUtils.getJsonFromCsvAsync(csvFilePath);
+        // });
     },
     /**
      * Runs before a WebdriverIO command gets executed.
@@ -235,25 +258,29 @@ exports.config = {
      * Hook that gets executed before the suite starts
      * @param {Object} suite suite details
      */
-    // beforeSuite: function (suite) {
-    // },
+    beforeSuite: async function (suite) {
+        console.log(`INFO : ===== Executing beforeSuite hook =====`);
+    },
     /**
      * Function to be executed before a test (in Mocha/Jasmine) starts.
      */
-    // beforeTest: function (test, context) {
-    // },
+    beforeTest: async function (test, context) {
+        console.log(`INFO : ===== Executing beforeTest hook =====`);
+    },
     /**
      * Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
      * beforeEach in Mocha)
      */
-    // beforeHook: function (test, context) {
-    // },
+    beforeHook: async function (test, context) {
+        console.log(`INFO : ===== Executing beforeHook hook =====`);
+    },
     /**
      * Hook that gets executed _after_ a hook within the suite starts (e.g. runs after calling
      * afterEach in Mocha)
      */
-    // afterHook: function (test, context, { error, result, duration, passed, retries }) {
-    // },
+    afterHook: async function (test, context, { error, result, duration, passed, retries }) {
+        console.log(`INFO : ===== Executing afterHook hook =====`);
+    },
     /**
      * Function to be executed after a test (in Mocha/Jasmine only)
      * @param {Object}  test             test object
@@ -265,6 +292,7 @@ exports.config = {
      * @param {Object}  result.retries   informations to spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
     afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+        console.log(`INFO : ===== Executing afterTest hook =====`);
         if (testConfigGbl.get("captureDesktopScreenshot")) {
             await commandUtils.captureDesktopScreenshot(`./reports/screenshots/${new Date().getTime()}_${test.title.replace(/ /g, "_")}`);
         } else {
@@ -276,8 +304,9 @@ exports.config = {
      * Hook that gets executed after the suite has ended
      * @param {Object} suite suite details
      */
-    // afterSuite: function (suite) {
-    // },
+    afterSuite: async function (suite) {
+        console.log(`INFO : ===== Executing afterSuite hook =====`);
+    },
     /**
      * Runs after a WebdriverIO command gets executed
      * @param {String} commandName hook command name
@@ -294,16 +323,18 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {Array.<String>} specs List of spec file paths that ran
      */
-    // after: function (result, capabilities, specs) {
-    // },
+    after: async function (result, capabilities, specs) {
+        console.log(`INFO : ===== Executing after hook =====`);
+    },
     /**
      * Gets executed right after terminating the webdriver session.
      * @param {Object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {Array.<String>} specs List of spec file paths that ran
      */
-    // afterSession: function (config, capabilities, specs) {
-    // },
+    afterSession: async function (config, capabilities, specs) {
+        console.log(`INFO : ===== Executing afterSession hook =====`);
+    },
     /**
      * Gets executed after all workers got shut down and the process is about to exit. An error
      * thrown in the onComplete hook will result in the test run failing.
@@ -312,13 +343,15 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    // onComplete: function(exitCode, config, capabilities, results) {
-    // },
+    onComplete: async function (exitCode, config, capabilities, results) {
+        console.log(`INFO : ===== Executing onComplete hook =====`);
+    },
     /**
      * Gets executed when a refresh happens.
      * @param {String} oldSessionId session ID of the old session
      * @param {String} newSessionId session ID of the new session
      */
-    // onReload: function(oldSessionId, newSessionId) {
-    // }
+    onReload: async function (oldSessionId, newSessionId) {
+        console.log(`INFO : ===== Executing onReload hook =====`);
+    },
 };
