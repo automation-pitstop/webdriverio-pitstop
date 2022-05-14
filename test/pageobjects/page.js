@@ -11,4 +11,12 @@ export default class Page {
         console.log(`Loading the URL : ${browser.config.baseUrl}/${path}`);
         return browser.url(`/${path}`);
     }
+    launch(url) {
+        if (url.length < 1) {
+            console.log(`Loading the URL : ${browser.config.baseUrl}`);
+            return browser.url(`${browser.config.baseUrl}`);
+        }
+        console.log(`Loading the URL : ${url}`);
+        return browser.url(url);
+    }
 }
