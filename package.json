@@ -28,6 +28,7 @@
         "parallelTest": "wdio run wdio.conf.chrome.js --suite parallelTest",
         "commandTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/commandsTest.js",
         "csvTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/csvTest.js",
+        "dataDrivenTest": "wdio run wdio.conf.chrome.js --spec dataDrivenTest",
         "quickTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/quickEmptyTest.js",
         "filePathTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/filePathPrint.js",
         "hookSequenceTest": "wdio run wdio.conf.chrome.js --spec ./test/specs/hookSequenceTest.js",
