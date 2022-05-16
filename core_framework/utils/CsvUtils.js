@@ -19,16 +19,18 @@ class CsvUtils {
         });
     }
 
-    async getJsonDataFromCsv(csvFilePathFromRoot) {
-        console.log(`INFO : Parsing CSV to Json for the mentioned file : ${csvFilePathFromRoot}`);
-        return await csv().fromFile(path.resolve(csvFilePathFromRoot));
+    async getJsonDataFromCsv(csvFilePathFromRoot, folderPath = "./") {
+        let filePathFromRoot = `${folderPath}${csvFilePathFromRoot}`;
+        console.log(`INFO : Parsing CSV to Json for the mentioned file : ${filePathFromRoot}`);
+        return await csv().fromFile(path.resolve(filePathFromRoot));
     }
 
-    async getExecutableSpecDetailsFromTestSuiteCsv(csvFilePathFromRoot) {
-        console.log(`INFO : Parsing provided test suite file for enabled specs : ${csvFilePathFromRoot}`);
-        let jsonObj = await this.getJsonDataFromCsv(csvFilePathFromRoot);
+    async getExecutableSpecDetailsFromTestSuiteData(csvFilePathFromRoot, folderPath = "./") {
+        let suiteDataFilePath = `${folderPath}${csvFilePathFromRoot}`;
+        console.log(`INFO : Parsing provided test suite file for enabled specs : ${suiteDataFilePath}`);
+        let jsonObj = await this.getJsonDataFromCsv(csvFilePathFromRoot, folderPath);
         this.removeByAttr(jsonObj, "execute", "false");
-        console.log(`INFO : Found '${jsonObj.length}' test specs which are enable in provided test suite file : ${csvFilePathFromRoot}`);
+        console.log(`INFO : Found '${jsonObj.length}' test specs which are enable in provided test suite file : ${suiteDataFilePath}`);
         return jsonObj;
     }
 

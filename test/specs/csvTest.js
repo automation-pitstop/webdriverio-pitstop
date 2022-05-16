@@ -1,11 +1,11 @@
 import path from "path";
 
 describe("Empty test suite", () => {
-    for (let index = 0; index < testSpecDetails.length; index++) {
-        if (testSpecDetails[index].testSpecPath.endsWith(path.basename(__filename))) {
-            it(`SpecName : ${testSpecDetails[index].testSpecPath}`, async () => {
+    for (let index = 0; index < testSuiteDataGbl.length; index++) {
+        if (testSuiteDataGbl[index].testCaseId.endsWith(path.basename(__filename))) {
+            it(`${index}_${testSuiteDataGbl[index].testDataKey}`, async () => {
                 console.log("===============Started===========");
-                console.log(testSpecDetails[index].testCaseId); //Reading from globalObject
+                console.log(testSuiteDataGbl[index].testDataKey); //Reading from globalObject
                 console.log("=================Done===========");
             }, 0);
         }

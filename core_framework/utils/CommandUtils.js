@@ -55,7 +55,7 @@ class CommandUtils {
         return appConfigData;
     }
 
-    getUpdatedConfigData(envName) {
+    getUpdatedConfigDataMap(envName) {
         let appConfigData = this.getConfigDataAsPerEnvType(envName);
         let updatedAppConfigDataMap = new Map();
         console.log(`INFO : =============== App Configuration ===============`);
