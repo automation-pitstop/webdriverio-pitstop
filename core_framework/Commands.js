@@ -41,6 +41,21 @@ class Commands {
         }
     }
 
+    getTextByJs(locator) {
+        let locator = "//*[@id='__docusaurus']/nav/div[1]/div[1]/a[5]";
+        let result = document.evaluate(locator, document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        let returnString = "";
+        for (let i = 0; i < result.snapshotLength; i++) {
+            if (i < result.snapshotLength - 1) {
+                returnString = returnString + result.snapshotItem(i).textContent.trim() + "~";
+            } else {
+                returnString = returnString + result.snapshotItem(i).textContent.trim();
+            }
+        }
+        // return returnString;
+        console.log(returnString);
+    }
+
     getOverriddenTimeout(waitTime) {
         if (waitTime == undefined) {
             waitTime = testConfigGbl.waitforTimeout;
