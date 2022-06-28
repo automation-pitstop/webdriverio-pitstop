@@ -41,19 +41,26 @@ class Commands {
         }
     }
 
-    getTextByJs(locator) {
-        let locator = "//*[@id='__docusaurus']/nav/div[1]/div[1]/a[5]";
-        let result = document.evaluate(locator, document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-        let returnString = "";
-        for (let i = 0; i < result.snapshotLength; i++) {
-            if (i < result.snapshotLength - 1) {
-                returnString = returnString + result.snapshotItem(i).textContent.trim() + "~";
-            } else {
-                returnString = returnString + result.snapshotItem(i).textContent.trim();
-            }
+    async getGridTextByJs(locator, waitTime) {
+        waitTime = this.getOverriddenTimeout(waitTime);
+        try {
+            await this.findElement(locator, waitTime);
+            const textOutput = await browser.execute((locator) => {
+                let result = document.evaluate(locator, document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                let returnString = "";
+                for (let i = 0; i < result.snapshotLength; i++) {
+                    if (i < result.snapshotLength - 1) {
+                        returnString = returnString + result.snapshotItem(i).textContent.trim() + "~";
+                    } else {
+                        returnString = returnString + result.snapshotItem(i).textContent.trim();
+                    }
+                }
+                return returnString;
+            }, locator);
+            return textOutput;
+        } catch (error) {
+            assert.fail(`ISSUE : Unable to the text of element by JS, locator : ${locator}\n` + error);
         }
-        // return returnString;
-        console.log(returnString);
     }
 
     getOverriddenTimeout(waitTime) {
