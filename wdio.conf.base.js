@@ -6,12 +6,14 @@ import fileUtils from "./core_framework/utils/FileUtils";
 import commandUtils from "./core_framework/utils/CommandUtils";
 import csvUtils from "./core_framework/utils/CsvUtils";
 process.env.ENV = process.env.ENV == undefined ? "tst" : process.env.ENV;
-global.testConfigGbl = commandUtils.getUpdatedConfigData(process.env.ENV);
-const testSuiteCsvPath = "./test_suite_data/suiteData.csv";
-const testDataCsvPath = "./test_data/testData.csv";
-global.testSpecDetails = "";
-global.testCaseData = "";
-global.testIdSpecificData = "";
+global.testConfigGbl = commandUtils.getUpdatedConfigDataMap(process.env.ENV);
+const test_suite_folder = "./test_suite_data/";
+const test_data_folder = "./test_data/";
+const testSuiteFileName = testConfigGbl.get("testSuiteFileName");
+const testDataFileName = testConfigGbl.get("testDataFileName");
+global.testSuiteDataGbl = "";
+global.testCaseDataGbl = "";
+global.testDataMapGbl = "";
 
 exports.config = {
     //
@@ -210,8 +212,6 @@ exports.config = {
      */
     onWorkerStart: async function (cid, caps, specs, args, execArgv) {
         console.log(`INFO : ===== Executing onWorkerStart hook =====`);
-        // testDataJson = await csv().fromFile(testDataCsvPath);
-        // console.log(testDataJson);
     },
     /**
      * Gets executed just after a worker process has exited.
@@ -233,9 +233,11 @@ exports.config = {
      */
     beforeSession: async function (config, capabilities, specs, cid) {
         console.log(`INFO : ===== Executing beforeSession hook =====`);
-        testSpecDetails = await csvUtils.getExecutableSpecDetailsFromTestSuiteCsv(testSuiteCsvPath);
-        testCaseData = await csvUtils.getJsonDataFromCsv(testDataCsvPath);
-        testIdSpecificData = csvUtils.getDataInMap(testCaseData, "testCaseId");
+        // testSuiteDataGbl = await csvUtils.getExecutableSpecDetailsFromTestSuiteData(testSuiteFileName);
+        // testCaseDataGbl = await csvUtils.getJsonDataFromCsv(testDataFileName);
+        testSuiteDataGbl = await csvUtils.getExecutableSpecDetailsFromTestSuiteData(testSuiteFileName, test_suite_folder);
+        testCaseDataGbl = await csvUtils.getJsonDataFromCsv(testDataFileName, test_data_folder);
+        testDataMapGbl = csvUtils.getDataInMap(testCaseDataGbl, "testDataKey");
     },
     /**
      * Gets executed before test execution begins. At this point you can access to all global

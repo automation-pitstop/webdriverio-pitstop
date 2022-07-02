@@ -11,6 +11,8 @@ module.exports = {
         browserMaxInstances: 1,
         captureDesktopScreenshot: true,
         maximizeBrowserAtLaunch: true,
+        testSuiteFileName: "suiteData.csv",
+        testDataFileName: "testData.csv",
     },
     tst: {
         baseUrl: "https://the-internet.herokuapp.com/",
@@ -24,6 +26,8 @@ module.exports = {
         browserMaxInstances: 1,
         captureDesktopScreenshot: true,
         maximizeBrowserAtLaunch: false,
+        testSuiteFileName: "suiteData.csv",
+        testDataFileName: "testData.csv",
     },
     prod: {
         baseUrl: "https://the-internet.herokuapp.com/prod",
@@ -37,6 +41,8 @@ module.exports = {
         browserMaxInstances: 1,
         captureDesktopScreenshot: false,
         maximizeBrowserAtLaunch: true,
+        testSuiteFileName: "suiteData.csv",
+        testDataFileName: "testData.csv",
     },
 };
 

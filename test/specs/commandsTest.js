@@ -26,4 +26,11 @@ describe("My Login application", () => {
         await browser.pause(5000);
         console.log("===============Done1===========");
     }, 2);
+    it("Fetch the data from grid using jS", async () => {
+        await browser.url("https://the-internet.herokuapp.com/tables");
+        console.log(await browser.getTimeouts());
+        let gridText = await commands.getGridTextByJs("//table[@id='table1']/tbody");
+        console.log(gridText);
+        console.log("===============Done1===========");
+    }, 2);
 });

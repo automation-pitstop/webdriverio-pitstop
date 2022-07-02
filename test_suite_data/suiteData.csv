@@ -1,4 +1,4 @@
-testSpecPath,testCaseId,execute,comment
+testCaseId,testDataKey,execute,comment
 ./test/specs/loginPageTest.js,US_en_user1,true,No comment
 ./test/specs/loginPageTest.js,US_en_user2,true,This is for testing
 ./test/specs/loginPageTest.js,US_en_userx,false,No comment
