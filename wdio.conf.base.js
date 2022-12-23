@@ -4,6 +4,9 @@ import path from "path";
 import fileUtils from "./core_framework/utils/FileUtils";
 import commandUtils from "./core_framework/utils/CommandUtils";
 import csvUtils from "./core_framework/utils/CsvUtils";
+import logger from "@wdio/logger";
+const log = logger("wdio.conf.base");
+
 process.env.ENV = process.env.ENV == undefined ? "tst" : process.env.ENV;
 global.testConfigGbl = commandUtils.getUpdatedConfigDataMap(process.env.ENV);
 const test_suite_folder = "./test_suite_data/";
@@ -96,11 +99,11 @@ exports.config = {
     // - @wdio/sumologic-reporter
     // - @wdio/cli, @wdio/config, @wdio/utils
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    // logLevels: {
-    //     webdriver: 'info',
-    //     '@wdio/appium-service': 'info'
-    // },
-    outputDir: "./logs",
+    logLevels: {
+        webdriver: "error",
+        // "@wdio/appium-service": "info",
+    },
+    // outputDir: "./logs",
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
     bail: testConfigGbl.get("bail"),
@@ -149,11 +152,17 @@ exports.config = {
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
     reporters: [
-        "spec",
+        [
+            "spec",
+            {
+                addConsoleLogs: true,
+            },
+        ],
         [
             "junit",
             {
                 outputDir: "./reports/junitResults",
+                addConsoleLogs: true,
                 outputFileFormat: function (options) {
                     // optional
                     return `results-${options.cid}.${options.capabilities}.xml`;
@@ -183,9 +192,9 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      */
     onPrepare: async function (config, capabilities) {
-        console.log(`INFO : ===== Executing onPrepare hook =====`);
-        console.info("INFO : OnPrepare is called");
-        console.info("INFO : Deleting old reports folder");
+        log.info(`INFO : ===== Executing onPrepare hook =====`);
+        log.info("INFO : OnPrepare is called");
+        log.info("INFO : Deleting old reports folder");
         removeSync("./reports");
         await fileUtils.createDirUnderRoot("logs");
         await fileUtils.createDirUnderRoot("tmp");
